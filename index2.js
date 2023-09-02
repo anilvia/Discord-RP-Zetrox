@@ -1,32 +1,37 @@
+const RPC = require("discord-rpc");
+const rpc = new RPC.Client({transport: "ipc"})
 const client = require('discord-rich-presence')('1145971268873625650');
 const http = require('http');
 const fetch = require('node-fetch');
 const fs = require("fs");
-
+const axios = require('axios')
 
 var buffer = {};
 var kills,dies,matches;
 var msg;
 
+fs.writeFileSync("INFO/KD/K", '')
+fs.writeFileSync("INFO/KD/D", '')
 
 var options_hudmsg = {
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 8111,
   path: '/hudmsg?lastEvt=0&lastDmg=0',
   method: 'GET'
 };
 var options_bmap = {
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 8111,
   path: '/map_info.json',
   method: 'GET'
 };
 var options_type = {
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 8111,
   path: '/indicators',
   method: 'GET'
 };
+let Nick = 'АналВиа'
 function Update_v2(){
 var request = http.request(options_hudmsg, function(res) {
   //console.log('STATUS: ' + res.statusCode);
@@ -35,26 +40,35 @@ var request = http.request(options_hudmsg, function(res) {
   res.on('data', function (chunk) {
     var json = JSON.parse(chunk);
     var len  = json.damage.length;
-    var d,num_k;
-    var k = 0;
+    var num_k;
     var time;
     var histr = ' '
+    var regex_k = new RegExp(Nick+"\(.*\) сбил");
+    var regex_d = new RegExp("\(.*\) сбил .* "+Nick);
+    var last_reg;
+    Update_v3()
+    var kills = 0;
+    var deaths = 0;
     for (let i = 0; i <= len; i++){
       var pivo = json.damage[i];
       var pivo_v1 = JSON.stringify(pivo);
       if (pivo_v1 != undefined){
-        if (pivo_v1.includes("АналВиа") == true && pivo_v1.includes("уничтожил") || pivo_v1.includes("сбил") == true ){var msg = pivo.msg;histr=msg;var time = '';time  = pivo.time.toString();k++
-        fs.writeFileSync("INFO/BATTLE/LAST_K", histr)
+
+        if (pivo_v1.includes("АналВиа") == true && pivo_v1.includes("уничтожил") || pivo_v1.includes("сбил") == true ){var msg = pivo.msg;histr=msg;var time = '';time  = pivo.time.toString();
+        
         fs.writeFileSync("INFO/BATTLE/LAST_KT", time)
-        }
+        last_reg = regex_k.exec(msg); if (last_reg != null){kills += 1; console.log ("k++",kills)  ;fs.writeFileSync("INFO/BATTLE/LAST_K", last_reg.input )}
+        last_reg = regex_d.exec(msg); if (last_reg != null){deaths += 1;console.log ("d++",deaths) ;fs.writeFileSync("INFO/BATTLE/LAST_K", last_reg.input )}
+                                                                                                                      }
         if (pivo_v1.includes("АналВиа") == true && pivo_v1.includes("поджёг") == true){var msg = pivo.msg;histr=msg;var time = '';time  = pivo.time.toString()}
         
         
-      }
+                                  }
        if (pivo_v1 == undefined && i == 0){histr = '';fs.writeFileSync("INFO/BATTLE/LAST_K", histr)}
-       fs.writeFileSync("INFO/KD/K", k.toString())
+       
       }
-
+      fs.writeFileSync("INFO/KD/K", kills.toString())
+      fs.writeFileSync("INFO/KD/D", deaths.toString())
 
       
   });
@@ -108,7 +122,7 @@ function Update_v3(){
       request.end();
   }
 //async function Update_v2(){
-//const response_map = await fetch('http://localhost:8111/map_info.json')
+//const response_map = await fetch('http://127.0.0.1:8111/map_info.json')
 //const data_map = await response_map.json()
 //}
 //const interval = setInterval(function() {
@@ -122,6 +136,8 @@ const interval = setInterval(function() {
   Update_v2();
   Update_v3();
   let msg = fs.readFileSync("INFO/BATTLE/LAST_K", "utf8");
+  let K = fs.readFileSync("INFO/KD/K", "utf8");
+  let D = fs.readFileSync("INFO/KD/D", "utf8");
   let time = fs.readFileSync("INFO/BATTLE/LAST_KT", "utf8");
   let Bfile = fs.readFileSync("INFO/BATTLE/battle_info", "utf8");
   let BBUFF = fs.readFileSync("INFO/BATTLE/BUFF", "utf8");
@@ -136,7 +152,8 @@ const interval = setInterval(function() {
 
     Binfo ='В бою'
   }
- if (Binfo == 'В бою' && plane != ''){Binfo = Binfo+' на '+plane}
+ if (Binfo == 'В бою' && plane != '' && plane != 'dummy_plane'){Binfo = Binfo+' на '+plane}
+ if (Binfo == 'В бою' && plane != '' && plane == 'dummy_plane'){Binfo = Binfo+' выбирает самолёт '}
   msg_b = msg.split('[SGht] ')[1];
 
   if (msg_b != undefined){
@@ -156,17 +173,51 @@ if(msg != ''){TT_AG=battle_time+' '+hud_m}
   if(Binfo == 'В ангаре'){TT_AG = 'Зетрох в игре, бойтесь наты'}
   if(Binfo == 'В бою' && msg == ''){TT_AG = 'Ожидание первого убийства...'}
   Update_v1();
-  
-  client.updatePresence({
-    details: Binfo,
-    state: TT_AG,
-
-    startTimestamp: Startup,
+ //if(hud_m == undefined){TT_AG = ':('}
+  rpc.on("ready", () => {
+    rpc.setActivity({
+        details: Binfo,
+        state: TT_AG,
+        startTimestamp: Startup,
+        largeImageText: "cover",
+        largeImageKey: "3dsk",
+        large_text : "lick",
+        
+        buttons: [
+            { label: "K:D M | "+K+":"+D+" M", url: "https://" , }
+        ]
+     })
     
-    largeImageKey: '3dsk',
-  
-    instance: true,
-  });
+})
+
+  rpc.login({clientId: "1145971268873625650"})
  }, 5000);
 
+ //HOST
+  
+ var cors = require('cors')
+const express = require('express')
+const app = express()
+const port = 3000
 
+app.use(cors())
+
+app.get('/KD', (req, res) => {
+  let K = fs.readFileSync("INFO/KD/K", "utf8");
+  let D = fs.readFileSync("INFO/KD/D", "utf8");
+  res.send(K+":"+D+" M")
+})
+app.get('/Last_Event', (req, res) => {
+  let msg = fs.readFileSync("INFO/BATTLE/LAST_K", "utf8");
+    if (msg != ''){var hud_m = msg.replace(/уничтожил/i, "💥");
+    res.send(hud_m)}
+    else{res.send("")}
+})
+
+app.get('/obs', (req, res) => {
+  res.send("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'></head><body><div class='update' style='position: absolute;width: 300px;height: 100px;background-color: lime;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: center;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 26px;transition: 1s linear;'> <div class='KD' id='1_KD' style='transition: 1s linear;'>: M</div> <div class='lastEv' id='1_lastEv' style='font-size: initial;transition: 1s linear;/* max-height: 37px; */'>[SGht] АналВиа (МиГ-29) 💥 [ии] F-86F-25</div> </div> <script> async function Get_info(){ let response_v1 = await fetch('http://localhost:3000/KD'); if (response_v1.ok) { let info = await response_v1.text(); console.log(info); document.getElementById('1_KD').innerHTML = info; } else { alert('Ошибка HTTP: ' + response.status); } let response_v2 = await fetch('http://localhost:3000/Last_Event'); if (response_v2.ok) { let info = await response_v2.text(); console.log(info); document.getElementById('1_lastEv').innerHTML = info; } else { alert('Ошибка HTTP: ' + response.status); } } const interval = setInterval(function() { Get_info() }, 5000); </script> </body></html>")
+})
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`)
+})
