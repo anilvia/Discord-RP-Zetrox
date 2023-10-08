@@ -1,0 +1,548 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="container">
+    <hr>
+    <h1>Create New Data</h1>
+    <hr>
+
+    <iframe style="display:none" name="csrf-frame"></iframe>
+<div style='display: flex;flex-wrap: wrap'>
+    
+    
+    
+<div class="FLEX C_V1">
+    <div class="header">Управление оверлеем</div>
+<form method='POST' action='http://localhost:3000/api/state' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
+        <div class="form-group">
+            <div class='bl_info'>Title</div>
+                <div style='display: flex;padding: 10px 0px 0px 10px;align-items: center;'>
+            <label for="Title" >Доп. Информация</label>
+            <input style="width: 195px;" class="form-control" name="title" id='placeholder_s' placeholder="" value="">
+                </div>
+        </div>
+    <div style='display: flex;flex-direction: column;align-items: flex-end;margin-top: 10px;'>
+  <button value='Поменять статус' onclick='UPDATE_STATE()'>Обновить</button>
+    </div>
+</form>
+</div>
+
+    <div class="FLEX C_V2">
+        <div class="header">Управление пользователем</div>
+    <form method='POST' action='http://localhost:3000/api/config' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
+        <div class="form-group">
+            <div class='bl_info'>User CF</div>
+            <div style="display: flex;flex-direction: column;">
+            <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Nick</label><input class="form-control" id='placeholder_n' name="Nick" placeholder="" value = ''></div>
+            <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Polk</label><input class="form-control" id='placeholder_p' name="Polk" placeholder="" value = ''></div>
+                </div>
+            
+        </div>
+        <div style='display: flex;flex-direction: column;align-items: flex-end;margin-top: 10px;'>
+  <button value='Поменять статус' onclick='UPDATE_CONF()'>Обновить</button>
+    </div>
+</form>
+    </div>
+    
+    <div class="FLEX C_V3">
+        <div class="header">Управление боевыми данными</div>
+        <div id="csrf-form" style="border-radius: 6px 6px 0px 0px;">
+    <form method='POST' action='http://localhost:3000/api/KD' target="csrf-frame" >
+        <div class="form-group">
+            <div class='bl_info'>Reg KD</div>
+            <label for="Title"></label>
+            <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Kills</label><input class="form-control" type="number" id='placeholder_K' name="k" placeholder="" value = ''><div id="K" class="Kda">K</div></div>
+            <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Dies</label> <input class="form-control" type="number" id='placeholder_D' name="d" placeholder="" value = ''><div id="D" class="Kda">D</div></div>
+        </div>
+        <div style='display: flex;flex-direction: column;align-items: flex-end;margin-top: 10px;'>
+  <button value='Поменять статус' id="service_click" onclick='UPDATE_KD()'>Обновить</button>
+   </div>
+</form>
+            <div style='display: flex;flex-direction: column;align-items: flex-end;margin-top:10px;'>
+ <button class='button-64' onclick="reset()">Reset</button></div>
+    </div>
+    
+    
+<form method='POST' action='http://localhost:3000/api/red_map' target="csrf-frame" id="csrf-form" style="border-top: 1px solid;">
+    <div class='bl_info'>Match NUM</div>
+    <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><div>Матч: </div><input class="form-control" type="number" id='map_nums' name="nums" placeholder="" value = ''><div class="Kda" id="matches"></div></div>
+    <div style='display: flex;flex-direction: column;align-items: flex-end;margin-top:10px;'>
+  <button value='-' id="service_click" onclick='UPDATE_maps()'>Обновить</button>
+    </div>
+</form>
+        </div>
+<div class="FLEX C_V4">
+        <div class="header">Данные</div>
+    <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
+        <div class="form-group">
+            <div class='bl_info'>Vars</div>
+            <div style="display: flex;flex-direction: column;">
+                <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Battles: </label> <div id='PMatches'></div></div>
+                <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Kills: </label>   <div id='PKills'></div></div>
+                <div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><label for="Title">Dies: </label>    <div id='PDeaths'></div></div>
+            
+                </div>
+            
+        </div>
+</form>
+    </div>
+    <div class="FLEX C_V5">
+        <div class="header">Настройка, отладка</div>
+    <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
+        <div class="form-group">
+            <div class='bl_info'>Settings</div>
+            <div style="display: flex;flex-direction: column;">
+               <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать килл-лог</div><input id="input_overlay_c" type="checkbox" onclick ="Overlay_Toggle()"></div>
+                <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать превью</div><input id="input_overlay_c" type="checkbox" onclick ="OBS_Toggle(this)"></div>
+                <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать статус</div><input id="input_overlay_c" type="checkbox" onclick ="STA_Toggle()"></div>
+                
+                </div>
+            
+        </div>
+</form>
+    </div>
+    
+    <div class="FLEX C_V6" id='C_V6'>
+        <div class="header">Быстрая корректировка</div>
+        <div class="OPR_N" style="display: none" id='OPR_BL'>DIV DISABLE</div>
+    <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;padding: 10px;">
+        <div class="form-group">
+            <div style="display: flex;flex-direction: row;">
+                    <div style="display: flex;flex-direction: column;align-items: center;"><button class="buttonP"><img style="width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button><div style='o_kd' id=''>K</div><button class="buttonD"><img style="transform: rotateX(180deg);width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button>
+                    </div>
+                <div style="display: flex;flex-direction: column;align-items: center;"><button class="buttonP"><img style="width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button><div style='o_kd'>D</div><button class="buttonD"><img style="transform: rotateX(180deg);width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button>
+                </div>
+                <div style="display: flex;flex-direction: column;align-items: center;"><button class="buttonP" onclick="FASTRMP()"><img style="width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button><div style='o_kd'>M</div><button class="buttonD" onclick="FASTRMD()"><img style="transform: rotateX(180deg);width: 40px" src="https://media.discordapp.net/attachments/688332382062903315/1149611268378988554/top.png"></button>
+                </div>
+                </div>
+        </div>
+</form>
+    </div>
+    <div id="draggable_v1" style="no-select_v1; display: none;">
+    <div class="update" style="position: absolute;border-radius: 15px;;width: 700px;height: 100px;background-color: #00ff0069;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 40px;transition: 1s linear;"> <div class="flex_ke" style="display:flex;flex-direction: row;align-items: center;"> <div class="state" id="state" style="margin-right: 10px;font-size: 30px;"></div> <div class="KD" id="1_KD" style="transition: 1s linear;"></div> </div> <div class="lastEv" id="1_lastEv" style="font-size: large; transition: all 1s linear 0s; color: rgb(255, 255, 255);"></div> </div>
+    </div>
+    </div>
+<script>
+    OPR();get_kdo()
+    async function SERVPM(info){
+fetch("http://localhost:3000/api/red_map", {
+  method: "POST",
+  body: JSON.stringify({
+    nums: info,
+  }),
+  headers: {
+    "Content-type": "application/json; charset=UTF-8"
+  }
+});
+}
+   async function FASTRMP(){
+       let response_kd = await fetch('http://localhost:3000/api/matches');
+    if (response_kd.ok) {
+        let info = await response_kd.text();
+        info = parseInt(info);
+        info = info + 1;
+        SERVPM(info);
+        document.getElementById('PMatches').innerHTML = info;
+        document.getElementById('matches').innerHTML = info;
+        document.getElementById('map_nums').value = info;
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }
+
+}
+    async function FASTRMD(){
+       let response_kd = await fetch('http://localhost:3000/api/matches');
+    if (response_kd.ok) {
+        let info = await response_kd.text();
+        info = parseInt(info);
+        info = info - 1;
+        SERVPM(info);
+        document.getElementById('PMatches').innerHTML = info;
+        document.getElementById('matches').innerHTML = info;
+        document.getElementById('map_nums').value = info;
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }
+
+}
+        async function get_status_api() {
+
+}async function get_kdo() {
+    let response_lekd = await fetch('http://localhost:3000/KD');
+    if (response_lekd.ok) {
+        let info = await response_lekd.text();
+        document.getElementById('1_KD').innerHTML = info
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+     async function get_event() {
+    let response_le = await fetch('http://localhost:3000/Last_Event');
+    if (response_le.ok) {
+        let info = await response_le.text();
+        document.getElementById('1_lastEv').innerHTML = info
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    async function OPR() {
+    let response_ovr = await fetch('http://localhost:3000/api/OPR');
+    if (response_ovr.ok) {
+        let info = await response_ovr.text();
+        if(info == 1){document.getElementById('C_V6').style.animation = ('NOT_OPR 2s linear infinite')
+
+}
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+     async function OBS_Toggle(checkbox) {
+         if(checkbox.checked)   {document.getElementById('draggable_v1').style.display = null}
+         else                   {document.getElementById('draggable_v1').style.display = 'none'}
+    
+     }
+     async function Overlay_Toggle() {
+    let response_ovr = await fetch('http://localhost:3000/overlay_toggle');
+    if (response_ovr.ok) {
+        let info = await response_ovr.text();
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    async function STA_Toggle() {
+    let response_sta = await fetch('http://localhost:3000/state_toggle');
+    if (response_sta.ok) {
+        let info = await response_sta.text();
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    async function get_matches() {
+    let response_kd = await fetch('http://localhost:3000/api/matches');
+    if (response_kd.ok) {
+        let info = await response_kd.text();
+        document.getElementById('PMatches').innerHTML = info;
+        document.getElementById('matches').innerHTML = info;
+        document.getElementById('map_nums').value = info;
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    async function tmp_res() {
+    let response_kd = await fetch('http://localhost:3000/reset');
+    if (response_kd.ok) {
+        let info = await response_kd.text;
+        console.log(response_kd.text,'reset')
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+async function re(){
+    let response_kd = await fetch('http://localhost:3000/KD_l');
+    if (response_kd.ok) {
+        let info = await response_kd.json();
+        var tmp_kills,tmp_deaths;
+        console.log(info.Kills,info.Deaths);
+if(parseInt(info.Kills) > 0)    {info.Kills = '-'+info.Kills; tmp_kills = parseInt(info.Kills)
+document.getElementById('placeholder_K').value = tmp_kills;
+document.getElementById('service_click').click()
+}
+        
+if(parseInt(info.Deaths) > 0)   {info.Deaths = '-'+info.Deaths; tmp_deaths = parseInt(info.Deaths)
+document.getElementById('placeholder_D').value = tmp_deaths;
+document.getElementById('service_click').click()
+}
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+
+async function reset() {
+    console.log('tmp_kills');
+    document.getElementById('placeholder_K').value = 0;
+    document.getElementById('placeholder_D').value = 0;
+    document.getElementById('service_click').click()
+    setTimeout(() => {re()}, 5000);
+}   
+        document.getElementById('placeholder_K').placeholder =  '0';
+        document.getElementById('placeholder_D').placeholder =  '0';
+async function Get_KD() {
+    
+    let response_kd = await fetch('http://localhost:3000/KD_l');
+    if (response_kd.ok) {
+        let info = await response_kd.json();
+        document.getElementById('K').innerHTML =  info.Kills;
+        document.getElementById('D').innerHTML =  info.Deaths;
+        document.getElementById('PKills').innerHTML =  info.Kills;
+        document.getElementById('PDeaths').innerHTML =  info.Deaths;
+        console.log(info.Kills,info.Deaths,info)
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+async function Get_nick() {
+    setTimeout(() => {}, 1000);
+    let response_v1 = await fetch('http://localhost:3000/config_data');
+    if (response_v1.ok) {
+        let info = await response_v1.json();
+        document.getElementById('placeholder_n').placeholder = info.nick;
+        document.getElementById('placeholder_p').placeholder = info.polk;
+        document.getElementById('placeholder_n').value = '';
+        document.getElementById('placeholder_p').value = '';
+        console.log(info.nick,info.polk,info)
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    
+    async function Get_state(){
+        
+    let response_v2 = await fetch('http://localhost:3000/state');
+    if (response_v2.ok) {
+        let info = await response_v2.text();
+        document.getElementById('placeholder_s').placeholder = info;
+        document.getElementById('placeholder_s').value = '';
+        document.getElementById('state').innerHTML = info;
+        console.log(info)
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+function UPDATE_STATE(){setTimeout(() => {Get_state()}, 500);}
+    function UPDATE_CONF(){setTimeout(() => {Get_nick()}, 500);}
+        function UPDATE_KD(){setTimeout(() => {Get_KD()}, 500);}
+            function UPDATE_maps(){setTimeout(() => {get_matches()}, 500);}
+    
+window.onload = (event) => {
+    
+  Get_state();Get_nick();Get_KD();get_matches();get_event();UPDATE_STATE()
+};
+    const interval = setInterval(function() {
+                
+         Get_KD();get_matches();get_event();get_kdo();   }, 5000);
+      var isMouseDown,initX,initY,height = draggable_v1.offsetHeight,width = draggable_v1.offsetWidth;
+
+draggable_v1.addEventListener('mousedown', function(e) {
+  isMouseDown = true;
+  document.body.classList.add('no-select_v1');
+  initX = e.offsetX;
+  initY = e.offsetY;
+})
+
+document.addEventListener('mousemove', function(e) {
+  if (isMouseDown) {
+    var cx = e.clientX - initX,
+        cy = e.clientY - initY;
+    if (cx < 0) {
+      cx = 0;
+    }
+    if (cy < 0) {
+      cy = 0;
+    }
+    if (window.innerWidth - e.clientX + initX < width) {
+      cx = window.innerWidth - width;
+    }
+    if (e.clientY > window.innerHeight - height+ initY) {
+      cy = window.innerHeight - height;
+    }
+    draggable_v1.style.left = cx + 'px';
+    draggable_v1.style.top = cy + 'px';
+  }
+})
+
+draggable_v1.addEventListener('mouseup', function() {
+  isMouseDown = false;
+  document.body.classList.remove('no-select_v1');
+})
+</script>
+</div>
+    </body>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+.Kda {
+    margin-left: 5px;
+}
+input {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: #fff;
+    background-color: rgb(28,28,30);
+    box-shadow: 0 0 3vw rgba(0,0,0,0.5), 0 0 0 7vw transparent;
+    border-radius: 0.4vw;
+    border: none;
+    outline: none;
+    padding: 5px 0px 5px 10px;
+    max-width: 300px;
+    transition: .4s;
+    margin-left: 10px;
+}
+
+input:hover {
+  box-shadow: 0 0 0 .15vw rgba(135, 207, 235, 0.186);
+}
+
+input:focus {
+  box-shadow: 0 0 0 .15vw skyblue;
+}
+button {
+    padding: 5px 10px;
+    background-color: #05080108;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    overflow: hidden;
+    transition: 0.5s;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+}
+
+button:hover{
+    background: #03e9f4;
+    color: #050801;
+    border: 1px solid #03e9f4;
+    box-shadow: 0 0 1px #03e9f4,
+                0 0 5px #03e9f4,
+                0 0 10px #03e9f4,
+                0 0 100px #03e9f4;
+}
+.buttonD:hover{
+    background: #ff2222;
+    color: #050801;
+    border: 1px solid #ff2222;
+    box-shadow: 0 0 1px #ff2222,
+                0 0 5px #ff2222,
+                0 0 10px #ff2222,
+                0 0 100px #ff2222;
+}
+.buttonP:hover{
+    background: #2eff22;
+    color: #2eff22;
+    border: 1px solid #2eff22;
+    box-shadow: 0 0 1px #2eff22,
+                0 0 5px #2eff22,
+                0 0 10px #2eff22,
+                0 0 100px #2eff22;
+}
+    .buttonP{margin: 9px;}
+    .buttonD{margin: 9px;}
+.bl_info {
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    width: fit-content;
+    border-left: 0px;
+    border-radius: 0px 0px 4px 0px;
+    padding: 3px 10px 1px 10px;
+}
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+    color:white
+}
+    .FLEX{
+        height: fit-content;
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+    margin: 20px;padding: 10px;
+        
+    }
+.header {
+    font-family: system-ui;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 0.1px solid #82dbfd54;
+    box-shadow: 0px 4px 6px -5px #82dbfd75;
+}
+#csrf-form {
+    padding-top: 0px;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    margin-top: 10px;
+    border-radius: 0px 0px 6px 6px;
+    padding: 10px;
+    padding-left: 0px;
+    padding-top: 0px;
+    border-top: 1px solid;
+}
+    @keyframes Border {
+  0% {border: 1px solid #00d0ff26;}
+        50% {border: 1px solid #00E2FF;}
+  100% {border: 1px solid #00d0ff26;}
+}
+    @keyframes NOT_OPR {
+  0% {border: 1px solid rgba(255, 0, 0, 0);box-shadow: 0px 0px 14px 0px rgba(255, 0, 0, 0);}
+        50% {border: 1px solid #ff0000;box-shadow: 0px 0px 8px 0px rgb(255, 0, 0);}
+  100% {border: 1px solid rgba(255, 0, 0, 0);box-shadow: 0px 0px 14px 0px rgba(255, 0, 0, 0);}
+}
+    .FLEX{
+        border: 1px solid #ffffff00;
+        animation-delay: 1s;
+    animation-name: Border;
+  animation-duration: 2s;
+        border: 1px solid #00d0ff26;
+}
+    #draggable {
+
+  position: fixed;
+  left:0;top: 0;
+
+}
+    .no-select {
+  user-select: none;
+}
+    .C_V1 {
+    position: fixed;
+    top: 80px;
+    left: 275px;
+}
+    .C_V2 {
+    position: fixed;
+    top: 275px;
+    left: 275px;
+}
+    .C_V3 {
+    position: fixed;
+    top: 80px;
+    left: -14px;
+}
+    .C_V4 {
+    position: fixed;
+    top: 275px;
+    left: 545px;
+}
+  .C_V5 {
+    position: fixed;
+    top: 507px;
+    left: 275px;
+}
+.C_V6 {
+    position: fixed;
+    top: 475px;
+    left: -14px;
+    animation-iteration-count: infinite;
+}
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.OPR_N {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    width: 28%;
+    height: 2%;
+    background: #ff000069;
+}
+    #draggable_v1 {
+
+  position: fixed;
+  left:0;top: 0;
+
+}
+    .no-select_v1 {
+  user-select: none;
+}
+</style>

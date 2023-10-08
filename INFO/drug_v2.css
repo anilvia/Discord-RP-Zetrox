@@ -1,0 +1,9 @@
+#draggable_v2 {
+
+  position: fixed;
+  left:0;top: 0;
+
+}
+    .no-select_v2 {
+  user-select: none;
+}
