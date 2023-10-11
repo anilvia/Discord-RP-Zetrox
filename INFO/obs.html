@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+    </head>
+    <body>
+        <div class='update' style='-webkit-text-stroke: .3px #000;position: absolute;width: 700px;height: 100px;background-color: lime;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 40px;transition: 1s linear;'>
+            <div class='flex_ke' style='display:flex;flex-direction: row;align-items: center;'>
+                <div class='state' id='state' style='margin-right: 10px;font-size: 30px;'></div>
+                <div class='KD' id='1_KD' style=''>Добро пожаловать.<br>Ожидайте, выполняются запросы.</div><div class='KD' id='K'></div><div style='display: none;animation-delay: 0.5s;' class='CHN_OUT' id='DDT'>:</div><div class='KD' id='D'></div><div class='KD' id='M'></div>
+            </div>
+            <div class='lastEv' id='1_lastEv' style='font-size: large; color: rgb(255, 255, 255);'></div>
+        </div>
+        <script>
+            function FRST() { document.getElementById('DDT').style.display = 'block';}
+            FRST()
+            function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } while (currentDate - date < milliseconds);
+            }
+            async function SERVICE() {
+                document.getElementById('1_KD').textContent = '';
+            }
+            async function Get_K() {
+                let response_v1 = await fetch('http://localhost:3000/KD/K');
+                if (response_v1.ok) {
+                    let info = await response_v1.text();
+                    console.log(info);
+                    SERVICE();
+const ELK = document.getElementById('K');
+ const PREK = ELK.innerHTML;
+if (parseInt(PREK) != parseInt(info)){console.log('change')
+    ELK.classList.add('CHN_IN')                              
+ELK.addEventListener('animationend', () => {
+    ELK.innerHTML = info;
+    
+  ELK.classList.remove('CHN_IN')
+    ELK.classList.add('CHN_OUT')
+});
+}
+                   
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }}
+            async function Get_D() {
+                let response_v1 = await fetch('http://localhost:3000/KD/D');
+                if (response_v1.ok) {
+                    let info = await response_v1.text();
+                    console.log(info);
+                   const ELD = document.getElementById('D');
+ const PRED = ELD.innerHTML;
+if (parseInt(PRED) != parseInt(info)){console.log('change')
+    ELD.classList.add('CHN_IN')
+ELD.addEventListener('animationend', () => {
+    ELD.innerHTML = info;
+  ELD.classList.remove('CHN_IN')
+    ELD.classList.add('CHN_OUT')
+});
+}
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }}
+            async function Get_M() {
+                let response_v1 = await fetch('http://localhost:3000/KD/M');
+                if (response_v1.ok) {
+                    let info = await response_v1.text();
+                    console.log(info);
+const ELM = document.getElementById('M');
+ const PREM = ELM.innerHTML;
+if (parseInt(PREM) != parseInt(info)){console.log('change')
+    ELM.classList.add('CHN_IN')
+ELM.addEventListener('animationend', () => {
+    ELM.innerHTML = info;
+  ELM.classList.remove('CHN_IN')
+    ELM.classList.add('CHN_OUT')
+});
+}
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }}
+            async function Get_info() {
+                let response_v1 = await fetch('http://localhost:3000/KD');
+                if (response_v1.ok) {
+                    let info = await response_v1.text();
+                    console.log(info);
+                    //document.getElementById('1_KD').innerHTML = info;
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }
+                let history = '';
+                let response_v2 = await fetch('http://localhost:3000/Last_Event');
+                if (response_v2.ok) {
+                    let info = await response_v2.text();
+                    console.log(info);
+                    history = info;
+                    document.getElementById('1_lastEv').style.color = '#ffe4c400';
+                    sleep(1000);
+                    document.getElementById('1_lastEv').innerHTML = info;
+                    document.getElementById('1_lastEv').style.color = '#ffffff';
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }
+                let response_v3 = await fetch('http://localhost:3000/state');
+                if (response_v3.ok) {
+                    let info = await response_v3.text();
+                    console.log(info);
+                    document.getElementById('state').innerHTML = info;
+                } else {
+                    alert('Ошибка HTTP: ' + response.status);
+                }
+            }
+            const interval = setInterval(function() {
+                Get_K();Get_D();Get_M();
+            }, 1000);
+            const intervalv2 = setInterval(function() {
+                Get_info();
+            }, 5000);
+        </script>
+        <style>
+.CHN_OUT {
+    animation-name: CHN_OUT;
+  animation-duration: 0.5s;
+}
+            .CHN_IN {
+    animation-name: CHN_IN;
+  animation-duration: 0.5s;
+}
+            #M{padding-left: 15px;}
+             @keyframes CHN_IN {
+  0% {filter: blur(0px)}
+  100% {filter: blur(10px)}
+}
+                @keyframes CHN_OUT {
+  0% {filter: blur(10px)}
+  100% {filter: blur(0px)}
+}
+</style>
+    </body>
+</html>
