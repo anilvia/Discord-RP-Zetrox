@@ -2,6 +2,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
+    
+ <div id='prewv' class='prew' style='margin-top:20px;transition: 1s linear;position: absolute;z-index: 2;overflow: hidden;height: 200px;display: flex;align-items: center;box-shadow: 0px 0px 7px 6px #000;top:50%;left:50%;transform:translate(-50%, -50%);'>
+<video id='mainprew' width="auto" height="280" autoplay muted id="videoId">
+<source src="https://cdn.discordapp.com/attachments/688332382062903315/1164864885952352266/79708270_free_online-video-cutter.com.mp4?ex=6544c3f6&is=65324ef6&hm=70da430161099f3e632ac55b51f567bd7faf8c7075a8bc9c221d9f167af02ca9&" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video>
+<script type='text/javascript'>
+document.getElementById('mainprew').addEventListener('ended',myHandler,false);
+function myHandler(e) {
+    const PREW = document.getElementById('prewv');
+        const MAIN = document.getElementById('update');
+PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
+    document.getElementById("prewv").remove();
+    MAIN.classList.add('PRW_OUT');MAIN.style.filter = 'blur(0px)';
+}
+</script>
+</div>
+
 <div class="container">
     <iframe style="display:none" name="csrf-frame"></iframe>
 <div style='display: flex;flex-wrap: wrap'>
@@ -9,7 +25,7 @@
     
     
 <div class="FLEX C_V1">
-    <div class="header">Управление оверлеем<div class='sign'></div></div>
+    <div class="header">Управление оверлеем<div style='display: flex;flex-direction: column'><div id='SN1U' class='signU signDS'></div><div id='SN1' class='sign signDS'></div></div></div>
 <form method='POST' action='http://localhost:3000/api/state' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
         <div class="form-group">
             <div class='bl_info'>Title</div>
@@ -25,7 +41,7 @@
 </div>
 
     <div class="FLEX C_V2">
-        <div class="header">Управление<br>пользователем<div class='sign'></div></div>
+        <div class="header">Управление<br>пользователем<div style='display: flex;flex-direction: column'><div id='SN2U' class='signU signDS'></div><div id='SN2' class='sign signDS'></div></div></div>
     <form method='POST' action='http://localhost:3000/api/config' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
         <div class="form-group">
             <div class='bl_info'>User CF</div>
@@ -42,7 +58,7 @@
     </div>
     
     <div class="FLEX C_V3" id="C_V3">
-        <div class="header">Управление боевыми данными<div class='sign'></div></div>
+        <div class="header">Управление боевыми данными<div style='display: flex;flex-direction: column'><div id='SN3U' class='signU signDS'></div><div id='SN3' class='sign signDS'></div></div></div>
         <div id="csrf-form" style="border-radius: 6px 6px 0px 0px;">
     <form method='POST' action='http://localhost:3000/api/KD' target="csrf-frame" id='serv_as'>
         <div class="form-group">
@@ -69,7 +85,7 @@
 </form>
         </div>
 <div class="FLEX C_V4">
-        <div class="header">Данные<div class='sign'></div></div>
+        <div class="header">Данные<div style='display: flex;flex-direction: column'><div id='SN8U' class='signU signDS'></div><div id='SN8' class='sign signDS'></div></div></div>
     <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
         <div class="form-group">
             <div class='bl_info'>Vars</div>
@@ -86,7 +102,7 @@
 </form>
     </div>
     <div class="FLEX C_V5">
-        <div class="header">Настройка, отладка<div class='sign'></div></div>
+        <div class="header">Настройка, отладка<div style='display: flex;flex-direction: column'><div id='SN4U' class='signU signDS'></div><div id='SN4' class='sign signDS'></div></div></div>
     <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
         <div class="form-group">
             <div class='bl_info'>Settings</div>
@@ -119,7 +135,7 @@
     </div>
     
     <div class="FLEX C_V6" id='C_V6'>
-        <div class="header">Быстрая корректировка<div class='sign' style="background: yellow;box-shadow: 0px 0px 8px 1px rgba(255, 220, 0, 1);"></div></div>
+        <div class="header">Быстрая корректировка<div style='display: flex;flex-direction: column'><div id='SN5U' class='signU signDS'></div><div id='SN5' class='sign signDS'></div></div></div>
         <div class="OPR_N" style="display: none" id='OPR_BL'>DIV DISABLE</div>
     <form method='' action='' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;padding: 10px;">
         <div class="form-group">
@@ -135,7 +151,7 @@
 </form>
     </div>
     <div class="FLEX C_V7" id='C_V7'>
-        <div class="header">Панель управления отслеживанием техники<div class='sign' style="background: red;box-shadow: 0px 0px 8px 1px rgba(255, 0, 0, 1);"></div></div>
+        <div class="header">Панель управления отслеживанием техники<div style='display: flex;flex-direction: column'><div id='SN6U' class='signU signDS'></div><div id='SN6' class='sign signDS'></div></div></div>
         <div class="OPR_N" style="display: none" id='OPR_BL'>DIV DISABLE</div>
    <div style="filter: blur(3px);">
 <div>Выберите технику для отслеживания ниже.</div>
@@ -159,10 +175,90 @@
     </div>
 <div class='blur'></div>
     <div id="draggable_v1" style="no-select_v1; display: none;">
-    <div class="update" style="position: absolute;border-radius: 15px;;width: 700px;height: 100px;background-color: #00ff0069;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 40px;transition: 1s linear;"> <div class="flex_ke" style="display:flex;flex-direction: row;align-items: center;"> <div class="state" id="state" style="margin-right: 10px;font-size: 30px;"></div> <div class="KD" id="1_KD" style="transition: 1s linear;"></div> </div> <div class="lastEv" id="1_lastEv" style="font-size: large; transition: all 1s linear 0s; color: rgb(255, 255, 255);"></div> </div>
+    <div class="update" style="position: absolute;border-radius: 15px;;width: 700px;height: 100px;background-color: #00ff0069;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 40px;transition: 1s linear;-webkit-text-stroke: 0.3px #000;backdrop-filter: blur(2px);"> <div style="display: flex;flex-direction: row;align-items: center">
+        <div class="state" id="state" style="font-size: 30px;"></div>
+        <div class="flex_ke" style="display:flex;flex-direction: row;align-items: center;"> <div class="state" id="state" style="margin-right: 10px;font-size: 30px;"></div> <div class="KD" id="1_KD" style="transition: 1s linear;"></div> </div></div> <div class="lastEv" id="1_lastEv" style="font-size: large; transition: all 1s linear 0s; color: rgb(255, 255, 255);"></div> </div>
     </div>
     </div>
+
 <script>
+    async function UPI(id){
+document.getElementById(id).classList.add('signBL');
+        setTimeout(() => {  document.getElementById(id).classList.remove('signBL'); }, 500)
+}
+    async function UPD(id){
+document.getElementById(id).classList.add('signRDM');
+        setTimeout(() => {  document.getElementById(id).classList.remove('signRDM'); }, 500)
+}
+    setTimeout(() => {StartRQ()}, 1000)
+   async function StartRQ(){
+fetch('http://localhost:3000/api/status').then((response) => {
+  if (response.ok) {
+                        document.getElementById('SN1').classList.remove('signRD');
+                    document.getElementById('SN2').classList.remove('signRD');
+                document.getElementById('SN3').classList.remove('signRD');
+            document.getElementById('SN4').classList.remove('signRD');
+        document.getElementById('SN5').classList.remove('signRD');
+    document.getElementById('SN6').classList.remove('signRD');
+document.getElementById('SN8').classList.remove('signRD');
+document.getElementById('SN1').classList.remove('signDS');
+    document.getElementById('SN2').classList.remove('signDS');
+        document.getElementById('SN3').classList.remove('signDS');
+            document.getElementById('SN4').classList.remove('signDS');
+                document.getElementById('SN5').classList.remove('signDS');
+                    document.getElementById('SN6').classList.remove('signDS');
+                        document.getElementById('SN8').classList.remove('signDS');
+                        document.getElementById('SN1').classList.add('signGR');
+                    document.getElementById('SN2').classList.add('signGR');
+                document.getElementById('SN3').classList.add('signGR');
+            document.getElementById('SN4').classList.add('signGR');
+        document.getElementById('SN5').classList.add('signYL');
+    document.getElementById('SN6').classList.add('signRD');
+document.getElementById('SN8').classList.add('signGR');
+document.getElementById('SN1U').classList.remove('signRD');
+    document.getElementById('SN2U').classList.remove('signRD');
+        document.getElementById('SN3U').classList.remove('signRD');
+            document.getElementById('SN4U').classList.remove('signRD');
+                document.getElementById('SN5U').classList.remove('signRD');
+                    document.getElementById('SN6U').classList.remove('signRD');
+                        document.getElementById('SN8U').classList.remove('signRD');
+    return response.text;
+  }
+  throw new Error('Ошибка');
+})
+.then((responseJson) => {
+})
+.catch((error) => {
+                        document.getElementById('SN1').classList.add('signGR');
+                    document.getElementById('SN2').classList.remove('signGR');
+                document.getElementById('SN3').classList.remove('signGR');
+            document.getElementById('SN4').classList.remove('signGR');
+        document.getElementById('SN5').classList.remove('signYL');
+    document.getElementById('SN6').classList.remove('signRD');
+document.getElementById('SN8').classList.remove('signGR');
+document.getElementById('SN1').classList.remove('signDS');
+    document.getElementById('SN2').classList.remove('signDS');
+        document.getElementById('SN3').classList.remove('signDS');
+            document.getElementById('SN4').classList.remove('signDS');
+                document.getElementById('SN5').classList.remove('signDS');
+                    document.getElementById('SN6').classList.remove('signDS');
+                        document.getElementById('SN8').classList.remove('signDS');
+                        document.getElementById('SN1').classList.add('signRD');
+                    document.getElementById('SN2').classList.add('signRD');
+                document.getElementById('SN3').classList.add('signRD');
+            document.getElementById('SN4').classList.add('signRD');
+        document.getElementById('SN5').classList.add('signRD');
+    document.getElementById('SN6').classList.add('signRD');
+document.getElementById('SN8').classList.add('signRD');
+document.getElementById('SN1U').classList.add('signRD');
+    document.getElementById('SN2U').classList.add('signRD');
+        document.getElementById('SN3U').classList.add('signRD');
+            document.getElementById('SN4U').classList.add('signRD');
+                document.getElementById('SN5U').classList.add('signRD');
+                    document.getElementById('SN6U').classList.add('signRD');
+                        document.getElementById('SN8U').classList.add('signRD');
+});
+}
     function vpInt(value) {
   return !isNaN(value) && 
          parseInt(Number(value)) == value && 
@@ -182,7 +278,8 @@
     "Content-type": "application/json; charset=UTF-8"
   }
 });
-     document.getElementById('SK').innerHTML = parseInt(infoK) + 1; document.getElementById('placeholder_K').value = parseInt(infoK) + 1; 
+    UPI('SN5U');
+     document.getElementById('SK').innerHTML = parseInt(infoK) + 1; document.getElementById('placeholder_K').value = parseInt(infoK) + 1;
         document.getElementById('SD').innerHTML = infoD;
     }
     async function FASTRKD(){
@@ -198,7 +295,8 @@
     "Content-type": "application/json; charset=UTF-8"
   }
 });
-     document.getElementById('SK').innerHTML = parseInt(infoK) + -1; document.getElementById('placeholder_K').value = parseInt(infoK) + -1; 
+        UPI('SN5U')
+     document.getElementById('SK').innerHTML = parseInt(infoK) + -1; document.getElementById('placeholder_K').value = parseInt(infoK) + -1;
         document.getElementById('SD').innerHTML = infoD; 
     }
      async function FASTRDP(){
@@ -214,6 +312,7 @@
     "Content-type": "application/json; charset=UTF-8"
   }
 });
+         UPI('SN5U')
      document.getElementById('SK').innerHTML = infoK; 
         document.getElementById('SD').innerHTML = parseInt(infoD) + 1;document.getElementById('placeholder_D').value = parseInt(infoD) + 1
     }
@@ -230,6 +329,7 @@
     "Content-type": "application/json; charset=UTF-8"
   }
 });
+        UPI('SN5U')
      document.getElementById('SK').innerHTML = infoK; 
         document.getElementById('SD').innerHTML = parseInt(infoD) - 1;document.getElementById('placeholder_D').value = parseInt(infoD) - 1
     }
@@ -249,6 +349,7 @@ fetch("http://localhost:3000/api/TXL_SLC", {
     "Content-type": "application/json; charset=UTF-8"
   }
 });
+       UPI('SN4U');
 } 
     async function SERVPM(info){
 fetch("http://localhost:3000/api/red_map", {
@@ -264,6 +365,7 @@ fetch("http://localhost:3000/api/red_map", {
    async function FASTRMP(){
        let response_kd = await fetch('http://localhost:3000/api/matches');
     if (response_kd.ok) {
+        UPI('SN5U')
         let info = await response_kd.text();
         info = parseInt(info);
         info = info + 1;
@@ -279,6 +381,7 @@ fetch("http://localhost:3000/api/red_map", {
     async function FASTRMD(){
        let response_kd = await fetch('http://localhost:3000/api/matches');
     if (response_kd.ok) {
+        UPI('SN5U')
         let info = await response_kd.text();
         info = parseInt(info);
         info = info - 1;
@@ -296,6 +399,7 @@ fetch("http://localhost:3000/api/red_map", {
 }async function get_kdo() {
     let response_lekd = await fetch('http://localhost:3000/KD');
     if (response_lekd.ok) {
+        UPI('SN3U');UPI('SN8U');
         let info = await response_lekd.text();
         document.getElementById('1_KD').innerHTML = info
         } else {
@@ -304,6 +408,7 @@ fetch("http://localhost:3000/api/red_map", {
      async function get_event() {
     let response_le = await fetch('http://localhost:3000/Last_Event');
     if (response_le.ok) {
+        UPI('SN4U');
         let info = await response_le.text();
         document.getElementById('1_lastEv').innerHTML = info
         } else {
@@ -327,6 +432,7 @@ fetch("http://localhost:3000/api/red_map", {
      async function Overlay_Toggle() {
     let response_ovr = await fetch('http://localhost:3000/overlay_toggle');
     if (response_ovr.ok) {
+        UPI('SN4U')
         let info = await response_ovr.text();
         } else {
         alert('Ошибка HTTP: ' + response.status);
@@ -334,13 +440,16 @@ fetch("http://localhost:3000/api/red_map", {
     async function STA_Toggle() {
     let response_sta = await fetch('http://localhost:3000/state_toggle');
     if (response_sta.ok) {
+        UPI('SN4U');
         let info = await response_sta.text();
         } else {
         alert('Ошибка HTTP: ' + response.status);
         }}
     async function get_matches() {
     let response_kd = await fetch('http://localhost:3000/api/matches');
+        
     if (response_kd.ok) {
+        UPI('SN3U');UPI('SN8U');
         let info = await response_kd.text();
         document.getElementById('PMatches').innerHTML = info;
         document.getElementById('matches').innerHTML = info;
@@ -359,6 +468,7 @@ fetch("http://localhost:3000/api/red_map", {
 async function re(){
     let response_kd = await fetch('http://localhost:3000/KD_l');
     if (response_kd.ok) {
+        setTimeout(() => {  document.getElementById('SN3U').classList.remove('signYL'); }, 500)
         let info = await response_kd.json();
         var tmp_kills,tmp_deaths;
         console.log(info.Kills,info.Deaths);
@@ -378,6 +488,7 @@ document.getElementById('service_click_m').click()
         }}
 
 async function reset() {
+    document.getElementById("SN3U").classList.add('signYL');
     console.log('tmp_kills');
     document.getElementById('placeholder_K').value = 0;
     document.getElementById('placeholder_D').value = 0;
@@ -390,6 +501,7 @@ async function Get_KD() {
     
     let response_kd = await fetch('http://localhost:3000/KD_l');
     if (response_kd.ok) {
+        UPI('SN3U');UPI('SN8U');
         let info = await response_kd.json();
         document.getElementById('K').innerHTML =  info.Kills;
         document.getElementById('D').innerHTML =  info.Deaths;
@@ -404,6 +516,7 @@ async function Get_nick() {
     let response_v1 = await fetch('http://localhost:3000/config_data');
     if (response_v1.ok) {
         let info = await response_v1.json();
+        UPI('SN2U');
         document.getElementById('placeholder_n').placeholder = info.nick;
         document.getElementById('placeholder_p').placeholder = info.polk;
         document.getElementById('placeholder_n').value = '';
@@ -418,6 +531,7 @@ async function Get_nick() {
     let response_v2 = await fetch('http://localhost:3000/state');
     if (response_v2.ok) {
         let info = await response_v2.text();
+        UPI('SN1U');
         document.getElementById('placeholder_s').placeholder = info;
         document.getElementById('placeholder_s').value = '';
         document.getElementById('state').innerHTML = info;
@@ -426,7 +540,7 @@ async function Get_nick() {
         alert('Ошибка HTTP: ' + response.status);
         }}
 function UPDATE_STATE(){setTimeout(() => {Get_state()}, 500);}
-    function UPDATE_CONF(){setTimeout(() => {Get_nick()}, 500);}
+    function UPDATE_CONF(){setTimeout(() => {Get_nick();}, 500);}
         function UPDATE_KD(){setTimeout(() => {Get_KD()}, 500);}
             function UPDATE_maps(){setTimeout(() => {get_matches()}, 500);}
             
@@ -437,7 +551,7 @@ window.onload = (event) => {
 };
     const interval = setInterval(function() {
                 
-         Get_KD();get_matches();get_event();get_kdo();   }, 5000);
+         Get_KD();get_matches();get_event();get_kdo();StartRQ();   }, 5000);
       var isMouseDown,initX,initY,height = draggable_v1.offsetHeight,width = draggable_v1.offsetWidth;
 
 draggable_v1.addEventListener('mousedown', function(e) {
@@ -708,13 +822,24 @@ body {
     .imgWRNG{animation: 2s linear 0s infinite normal none running WRNG;}
     .header{justify-content: center;flex-direction: row}
   .sign {
-    background: #00ff16;
     width: 3px;
     height: 10px;
     border-radius: 5px;
     margin-left: 10px;
     margin-top: 3px;
-    animation-name: DISABLE;
-    box-shadow: 0px 0px 8px 1px rgb(0 255 0);
+    transition: 0.5s;
 }
+     .signU {
+    width: 3px;
+    height: 3px;
+         margin-left: 10px;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+    .signGR{background: #00ff16;box-shadow: 0px 0px 8px 1px rgb(0 255 0);}
+    .signBL{background: #00f1ff!important;box-shadow: 0px 0px 8px 1px rgb(0 241 255)!important;}
+    .signRD{background: #ff0000!important;box-shadow: 0px 0px 8px 1px rgb(255 0 0)!important;}
+    .signYL{background: #ffe200!important;box-shadow: 0px 0px 8px 1px rgb(255 226 0)!important;}
+    .signDS{background: #383a48;}
+    .signRDM{background: #ff0000!important;box-shadow: 0px 0px 8px 1px rgb(255 0 0)!important;}
 </style>

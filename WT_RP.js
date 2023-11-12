@@ -6,8 +6,10 @@ const client = require('discord-rich-presence')('1145971268873625650');
 const http = require('http');
 const fetch = require('node-fetch');
 const fs = require("fs");
-const axios = require('axios')
+const axios = require('axios');
+var opn = require('opn');
 console.log('Модули успешно подключены.')
+
 
 var buffer = {};
 var kills,dies,matches;
@@ -19,7 +21,7 @@ fs.writeFileSync("INFO/KD/D", '0')
 fs.writeFileSync("INFO/KD/list", 'startup')
 fs.writeFileSync("INFO/OTHER/OverlayTRG", '0')
 fs.writeFileSync("INFO/OTHER/StateTRG", '0')
-fs.writeFileSync("INFO/OTHER/DMGType", '2')
+fs.writeFileSync("INFO/OTHER/DMGType", '1')
 
 var options_hudmsg = {
   host: '127.0.0.1',
@@ -43,7 +45,7 @@ let N_conf = fs.readFileSync("INFO/USER/NICK", "utf8");
 //let Nick = 'ZetRoX'
 let P_conf = fs.readFileSync("INFO/USER/POLK", "utf8");
 //let Polk = '-ZRoX-'
-let Version = '1.4.1'
+let Version = '1.4.3'
 
 let history_json_v1 = {
   list: []
@@ -66,7 +68,9 @@ var request = http.request(options_hudmsg, function(res) {
     var last_reg_k;var last_reg_kt;
     var last_reg_d;var last_reg_dt;
     var last_reg_s;var last_reg_st;
-   
+    
+    
+
     Update_v3()
     
     var deaths = 0;
@@ -145,14 +149,14 @@ var request =  http.request(options_bmap, function(res) {
       data = data + chunk;
       json_bmap = JSON.parse(chunk)
 
-      if(json_bmap.valid != grid_m){
-        if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
-          else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
-      }
-      if(json_bmap.valid == true){	
-        fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
-      if(json_bmap.valid == false){	
-        fs.writeFileSync("INFO/BATTLE/battle_info", "False")}
+      //if(json_bmap.valid != grid_m){
+      //  if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+      //    else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+      //}
+      //if(json_bmap.valid == true){	
+      //  fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
+      //if(json_bmap.valid == false){	
+      //  fs.writeFileSync("INFO/BATTLE/battle_info", "False")}
     });
     })
     request.on('error', function(err) {
@@ -163,18 +167,26 @@ var request =  http.request(options_bmap, function(res) {
 
 
 function Update_v3(){
+  let M = parseInt(fs.readFileSync("INFO/BATTLE/map_number", "utf8"));
   var request =  http.request(options_type, function(res) {
       let data = '';
       //console.log('STATUS: ' + res.statusCode);
       //console.log('HEADERS: ' + JSON.stringify(res.headers));
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
-        data = data + chunk;
+        data = data + chunk;  
         json_bmap = JSON.parse(chunk)
+        if(json_bmap.valid != grid_m){
+          if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+            else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+        }
         if(json_bmap.valid == true){	
-          fs.writeFileSync("INFO/BATTLE/PL", json_bmap.type)}
-          if(json_bmap.valid == false){	
+          fs.writeFileSync("INFO/BATTLE/PL", json_bmap.type)
+          fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
+          if(json_bmap.valid == false){
+            fs.writeFileSync("INFO/BATTLE/battle_info", "False")	
             fs.writeFileSync("INFO/BATTLE/PL", '')}
+          
       });
       })
       request.on('error', function(err) {
@@ -428,6 +440,24 @@ app.get("/api/OPR", function (req, res) {
   if(!req.body) return res.sendStatus(400);
   res.send('1');
 });
+app.get("/api/VM", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  res.send(fs.readFileSync("INFO/OTHER/VM", 'utf8'));
+});
+app.get("/api/status", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  res.send('OK');
+});
+app.post("/api/VMR", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  var buff_m = req.body.VM
+  fs.writeFileSync("INFO/OTHER/VM", buff_m.toString())
+  res.send('Succes');
+});
+
 app.listen(port, () => {
   console.log(`Внимание! Во время работы программы WT_RP порт ${port} будет зарезервирован.`)
 })
+
+console.log('открытие вкладок...')
+opn('http://localhost:3000/controle');

@@ -3,17 +3,34 @@
         <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
     </head>
-    <body>
-        <div class='update' style='-webkit-text-stroke: .3px #000;position: absolute;width: 700px;height: 100px;background-color: lime;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 40px;transition: 1s linear;'>
+      <div id='prewv' class='prew' style='margin-top:20px;transition: 1s linear;position: absolute;z-index: 2;overflow: hidden;height: 200px;display: flex;align-items: center;box-shadow: 0px 0px 7px 6px #000;'>
+<video id='mainprew' width="auto" height="280" autoplay muted id="videoId">
+<source src="https://cdn.discordapp.com/attachments/688332382062903315/1164864885952352266/79708270_free_online-video-cutter.com.mp4?ex=6544c3f6&is=65324ef6&hm=70da430161099f3e632ac55b51f567bd7faf8c7075a8bc9c221d9f167af02ca9&" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video>
+<script type='text/javascript'>
+document.getElementById('mainprew').addEventListener('ended',myHandler,false);
+function myHandler(e) {
+    const PREW = document.getElementById('prewv');
+        const MAIN = document.getElementById('update');
+PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';PREW.style.opacity = '0';
+    MAIN.classList.add('PRW_OUT');MAIN.style.filter = 'blur(0px)'
+}
+</script>
+</div>
+    <body style="margin: 0px">
+        <div id='update' class='update' style='-webkit-text-stroke: 2px #000;position: absolute;width: 1400px;height: 200px;background-color:#00ff0000;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 80px;transition: 1s linear;filter: blur(10000px);'>
             <div class='flex_ke' style='display:flex;flex-direction: row;align-items: center;'>
-                <div class='state' id='state' style='margin-right: 10px;font-size: 30px;'></div>
-                <div class='KD' id='1_KD' style=''>Добро пожаловать.<br>Ожидайте, выполняются запросы.</div><div class='KD' id='K'></div><div style='display: none;animation-delay: 0.5s;' class='CHN_OUT' id='DDT'>:</div><div class='KD' id='D'></div><div class='KD' id='M'></div>
+                <div class='state' id='state' style='margin-right: 10px;font-size: 60px;'></div>
+                <div class='KD' id='1_KD' style=''>Упс</div><div class='KD' id='K'></div><div style='display: none;animation-delay: 0.5s;' class='CHN_OUT' id='DDT'>:</div><div class='KD' id='D'></div><div class='KD' id='M'></div>
             </div>
             <div class='lastEv' id='1_lastEv' style='font-size: large; color: rgb(255, 255, 255);'></div>
         </div>
         <script>
+            var audio = new Audio();
+audio.preload = 'auto';
+            audio.volume = 0;
+audio.src = 'https://cdn.discordapp.com/attachments/688332382062903315/1161612555849052260/si.mp3?ex=6538eeff&is=652679ff&hm=ecd55d4f208f1185f76a37e87dbfa6384192c76e13120054d156b0cdf5c29f1a&';
             function FRST() { document.getElementById('DDT').style.display = 'block';}
-            FRST()
+            FRST() 
             function sleep(milliseconds) {
                 const date = Date.now();
                 let currentDate = null;
@@ -36,7 +53,7 @@ if (parseInt(PREK) != parseInt(info)){console.log('change')
     ELK.classList.add('CHN_IN')                              
 ELK.addEventListener('animationend', () => {
     ELK.innerHTML = info;
-    
+    audio.play()
   ELK.classList.remove('CHN_IN')
     ELK.classList.add('CHN_OUT')
 });
@@ -56,6 +73,7 @@ if (parseInt(PRED) != parseInt(info)){console.log('change')
     ELD.classList.add('CHN_IN')
 ELD.addEventListener('animationend', () => {
     ELD.innerHTML = info;
+    audio.play()
   ELD.classList.remove('CHN_IN')
     ELD.classList.add('CHN_OUT')
 });
@@ -74,6 +92,7 @@ if (parseInt(PREM) != parseInt(info)){console.log('change')
     ELM.classList.add('CHN_IN')
 ELM.addEventListener('animationend', () => {
     ELM.innerHTML = info;
+    audio.play()
   ELM.classList.remove('CHN_IN')
     ELM.classList.add('CHN_OUT')
 });
@@ -124,18 +143,39 @@ ELM.addEventListener('animationend', () => {
     animation-name: CHN_OUT;
   animation-duration: 0.5s;
 }
-            .CHN_IN {
+.CHN_IN {
     animation-name: CHN_IN;
   animation-duration: 0.5s;
 }
-            #M{padding-left: 15px;}
+.PRW_OUT {
+    animation-name: PRW_OUT;
+  animation-duration: 1s;
+}
+.PRW_IN {
+    animation-name: PRW_IN;
+  animation-duration: 1s;
+}
+            .lastEv{ -webkit-text-stroke: 0px rgb(0, 0, 0);}
+            #M{padding-left: 30px;}
              @keyframes CHN_IN {
   0% {filter: blur(0px)}
-  100% {filter: blur(10px)}
+  100% {filter: blur(20px)}
 }
                 @keyframes CHN_OUT {
-  0% {filter: blur(10px)}
+  0% {filter: blur(20px)}
   100% {filter: blur(0px)}
+}
+            @keyframes PRW_OUT {
+0% {filter: blur(10000px)}
+        80% {filter: blur(100px)}
+  100% {filter: blur(0px)}
+}
+            @keyframes PRW_IN {
+0% {filter: blur(0px)}
+        100% {filter: blur(1000px)}
+}
+            body {
+    background: #ffffff00;
 }
 </style>
     </body>
