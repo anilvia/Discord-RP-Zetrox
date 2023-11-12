@@ -45,7 +45,7 @@ let N_conf = fs.readFileSync("INFO/USER/NICK", "utf8");
 //let Nick = 'ZetRoX'
 let P_conf = fs.readFileSync("INFO/USER/POLK", "utf8");
 //let Polk = '-ZRoX-'
-let Version = '1.4.2'
+let Version = '1.4.3'
 
 let history_json_v1 = {
   list: []
@@ -149,14 +149,14 @@ var request =  http.request(options_bmap, function(res) {
       data = data + chunk;
       json_bmap = JSON.parse(chunk)
 
-      if(json_bmap.valid != grid_m){
-        if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
-          else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
-      }
-      if(json_bmap.valid == true){	
-        fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
-      if(json_bmap.valid == false){	
-        fs.writeFileSync("INFO/BATTLE/battle_info", "False")}
+      //if(json_bmap.valid != grid_m){
+      //  if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+      //    else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+      //}
+      //if(json_bmap.valid == true){	
+      //  fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
+      //if(json_bmap.valid == false){	
+      //  fs.writeFileSync("INFO/BATTLE/battle_info", "False")}
     });
     })
     request.on('error', function(err) {
@@ -167,6 +167,7 @@ var request =  http.request(options_bmap, function(res) {
 
 
 function Update_v3(){
+  let M = parseInt(fs.readFileSync("INFO/BATTLE/map_number", "utf8"));
   var request =  http.request(options_type, function(res) {
       let data = '';
       //console.log('STATUS: ' + res.statusCode);
@@ -175,10 +176,17 @@ function Update_v3(){
       res.on('data', (chunk) => {
         data = data + chunk;  
         json_bmap = JSON.parse(chunk)
+        if(json_bmap.valid != grid_m){
+          if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+            else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+        }
         if(json_bmap.valid == true){	
-          fs.writeFileSync("INFO/BATTLE/PL", json_bmap.type)}
-          if(json_bmap.valid == false){	
+          fs.writeFileSync("INFO/BATTLE/PL", json_bmap.type)
+          fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
+          if(json_bmap.valid == false){
+            fs.writeFileSync("INFO/BATTLE/battle_info", "False")	
             fs.writeFileSync("INFO/BATTLE/PL", '')}
+          
       });
       })
       request.on('error', function(err) {

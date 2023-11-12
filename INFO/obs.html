@@ -11,7 +11,7 @@ document.getElementById('mainprew').addEventListener('ended',myHandler,false);
 function myHandler(e) {
     const PREW = document.getElementById('prewv');
         const MAIN = document.getElementById('update');
-PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)'
+PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';PREW.style.opacity = '0';
     MAIN.classList.add('PRW_OUT');MAIN.style.filter = 'blur(0px)'
 }
 </script>
@@ -20,7 +20,7 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)'
         <div id='update' class='update' style='-webkit-text-stroke: 2px #000;position: absolute;width: 1400px;height: 200px;background-color:#00ff0000;/* max-width: 300px; */display: flex;flex-direction: column;flex-wrap: nowrap;align-items: flex-start;justify-content: center;font-family: monospace;color: white;font-weight: 100;font-size: 80px;transition: 1s linear;filter: blur(10000px);'>
             <div class='flex_ke' style='display:flex;flex-direction: row;align-items: center;'>
                 <div class='state' id='state' style='margin-right: 10px;font-size: 60px;'></div>
-                <div class='KD' id='1_KD' style=''>Упс :( произошла ошибка </div><div class='KD' id='K'></div><div style='display: none;animation-delay: 0.5s;' class='CHN_OUT' id='DDT'>:</div><div class='KD' id='D'></div><div class='KD' id='M'></div>
+                <div class='KD' id='1_KD' style=''>Упс</div><div class='KD' id='K'></div><div style='display: none;animation-delay: 0.5s;' class='CHN_OUT' id='DDT'>:</div><div class='KD' id='D'></div><div class='KD' id='M'></div>
             </div>
             <div class='lastEv' id='1_lastEv' style='font-size: large; color: rgb(255, 255, 255);'></div>
         </div>
@@ -155,6 +155,7 @@ ELM.addEventListener('animationend', () => {
     animation-name: PRW_IN;
   animation-duration: 1s;
 }
+            .lastEv{ -webkit-text-stroke: 0px rgb(0, 0, 0);}
             #M{padding-left: 30px;}
              @keyframes CHN_IN {
   0% {filter: blur(0px)}

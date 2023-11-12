@@ -11,8 +11,9 @@ document.getElementById('mainprew').addEventListener('ended',myHandler,false);
 function myHandler(e) {
     const PREW = document.getElementById('prewv');
         const MAIN = document.getElementById('update');
-PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)'
-    MAIN.classList.add('PRW_OUT');MAIN.style.filter = 'blur(0px)'
+PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
+    document.getElementById("prewv").remove();
+    MAIN.classList.add('PRW_OUT');MAIN.style.filter = 'blur(0px)';
 }
 </script>
 </div>
