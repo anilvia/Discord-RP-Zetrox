@@ -127,7 +127,7 @@ var request = http.request(options_hudmsg, function(res) {
     var regex_sk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) разбился");var regex_stk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) выведен из строя");
 
     var regex_k = new RegExp(N_conf+"\(.*\) сбил"); var regex_kt = new RegExp(N_conf+"\(.*\) уничтожил");
-    var regex_d = new RegExp("\(.*\) сбил .* "+N_conf+'.\\('+TX_Cnf+'\\)');var regex_dt = new RegExp("\(.*\) уничтожил .* "+N_conf);
+    var regex_d = new RegExp("\(.*\) сбил .* "+N_conf+'.\\(.*\\)');var regex_dt = new RegExp("\(.*\) уничтожил .* "+N_conf);
     var regex_s = new RegExp(N_conf+"\(.*\) разбился");var regex_st = new RegExp(N_conf+"\(.*\) выведен из строя");
 
 
