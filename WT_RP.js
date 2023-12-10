@@ -8,6 +8,8 @@ const fetch = require('node-fetch');
 const fs = require("fs");
 const axios = require('axios');
 var opn = require('opn');
+const request = require('request');
+const notifier = require('node-notifier');
 console.log('Модули успешно подключены.')
 
 
@@ -15,13 +17,67 @@ var buffer = {};
 var kills,dies,matches;
 var msg;
 
+
+const promisifiedRequest = function(options) {
+  return new Promise((resolve,reject) => {
+    request(options, (error, response, body) => {
+      if (response) {
+        return resolve(response);
+      }
+      if (error) {
+        return reject(error);
+      }
+    });
+  });
+};
+
+(async function() {
+  const options = {
+    url: 'https://anilvia.github.io/Discord-RP-Zetrox/INFO/OTHER/VERSION_M.txt',
+    method: 'GET',
+    gzip: true,
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36'
+    }
+  };
+
+  let response_v = await promisifiedRequest(options);
+  var pr_vers = fs.readFileSync("INFO/OTHER/VERSION_M.txt", "utf8");
+  var sr_vers = response_v.body;
+
+  
+
+  if (sr_vers.includes(pr_vers) == true){console.log('Используется последняя версия')}
+  if (sr_vers.includes(pr_vers) == false){
+    
+    var fileUrl = "https://github.com/anilvia/Discord-RP-Zetrox/archive/refs/heads/main.zip";
+var output = "NEW_VERSION.zip";
+request({url: fileUrl, encoding: null}, function(err, resp, body) {
+  if(err) throw err;
+  fs.writeFile(output, body, function(err) {
+    console.log("file written!");
+  });
+});
+notifier.notify({
+  title: 'Балтика',
+  message: 'Обнаружена и загружена в виде zip новая версия.\n Распакуйте архив с заменой файлов',
+  icon: path.join(__dirname, 'icon.jpg'),
+    sound: true,
+    wait: true,
+    timeout: 5
+});
+    console.log('Используется устаревшая версия ' + fs.readFileSync("INFO/OTHER/VERSION_M.txt", "utf8")+ ' доступна версия '+response_v.body)}
+
+})();
+
+
 fs.writeFileSync("INFO/KD/list_d", '0')
 fs.writeFileSync("INFO/KD/K", '0')
 fs.writeFileSync("INFO/KD/D", '0')
 fs.writeFileSync("INFO/KD/list", 'startup')
 fs.writeFileSync("INFO/OTHER/OverlayTRG", '0')
 fs.writeFileSync("INFO/OTHER/StateTRG", '0')
-fs.writeFileSync("INFO/OTHER/DMGType", '1')
+//fs.writeFileSync("INFO/OTHER/DMGType", '4')
 
 var options_hudmsg = {
   host: '127.0.0.1',
@@ -45,7 +101,10 @@ let N_conf = fs.readFileSync("INFO/USER/NICK", "utf8");
 //let Nick = 'ZetRoX'
 let P_conf = fs.readFileSync("INFO/USER/POLK", "utf8");
 //let Polk = '-ZRoX-'
-let Version = '1.4.3'
+let TX_Cnf = fs.readFileSync("INFO/BATTLE/TX_Cnf", "utf8");
+//let TX_Cnf = 'МиГ-29'
+let Version = fs.readFileSync("INFO/OTHER/VERSION_M.txt", "utf8");
+
 
 let history_json_v1 = {
   list: []
@@ -62,14 +121,21 @@ var request = http.request(options_hudmsg, function(res) {
     var num_k;
     var time= ' ';
     var histr = ' ';
+
+    var regex_kk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) сбил"); var regex_ktk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) уничтожил");
+    var regex_dk = new RegExp("\(.*\) сбил .* "+N_conf+" \\("+TX_Cnf+"\\)");var regex_dtk = new RegExp("\\(.*\\) уничтожил .* "+N_conf+" \\("+TX_Cnf+"\\)");
+    var regex_sk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) разбился");var regex_stk = new RegExp(N_conf+" \\("+TX_Cnf+"\\) выведен из строя");
+
     var regex_k = new RegExp(N_conf+"\(.*\) сбил"); var regex_kt = new RegExp(N_conf+"\(.*\) уничтожил");
-    var regex_d = new RegExp("\(.*\) сбил .* "+N_conf);var regex_dt = new RegExp("\(.*\) уничтожил .* "+N_conf);
+    var regex_d = new RegExp("\(.*\) сбил .* "+N_conf+'.\\('+TX_Cnf+'\\)');var regex_dt = new RegExp("\(.*\) уничтожил .* "+N_conf);
     var regex_s = new RegExp(N_conf+"\(.*\) разбился");var regex_st = new RegExp(N_conf+"\(.*\) выведен из строя");
-    var last_reg_k;var last_reg_kt;
-    var last_reg_d;var last_reg_dt;
-    var last_reg_s;var last_reg_st;
-    
-    
+
+
+
+    var last_reg_k;var last_reg_kt; var last_reg_kk;var last_reg_ktk;
+    var last_reg_d;var last_reg_dt; var last_reg_dk;var last_reg_dtk;
+    var last_reg_s;var last_reg_st; var last_reg_sk;var last_reg_stk;
+
 
     Update_v3()
     
@@ -89,34 +155,62 @@ var request = http.request(options_hudmsg, function(res) {
         let history_json = fs.readFileSync("INFO/KD/list", "utf8");
         if (history_json == 'startup'){history_json = history_json_v1;}
         history_json = JSON.stringify(history_json);
+        last_reg_kk = regex_kk.exec(msg);
+        last_reg_dk = regex_dk.exec(msg);
+        last_reg_sk = regex_sk.exec(msg);
+        last_reg_ktk = regex_ktk.exec(msg);
+        last_reg_dtk = regex_dtk.exec(msg);
+        last_reg_stk = regex_stk.exec(msg);
+
           last_reg_k = regex_k.exec(msg);
           last_reg_d = regex_d.exec(msg);
           last_reg_s = regex_s.exec(msg);
           last_reg_kt = regex_kt.exec(msg);
           last_reg_dt = regex_dt.exec(msg);
           last_reg_st = regex_st.exec(msg);
+
   var DMG_type = "0";
     DMG_type = fs.readFileSync("INFO/OTHER/DMGType", "utf8");
-      if(DMG_type == "1"){
-        if (last_reg_k != null && history_json.includes(pivo.id) != true )  {kills += 1;console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_k.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-        if (last_reg_d != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_d.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-        if (last_reg_s != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_s.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+    TX_Cnf = fs.readFileSync("INFO/BATTLE/TX_Cnf", "utf8");
+    if(DMG_type == "4"){
+      if (last_reg_kk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1;console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kk.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+      else if (last_reg_dk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+      else if (last_reg_sk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_sk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+                      }
+    else if(DMG_type == "5"){
+    TESTJS = JSON.parse(history_json)
+        if (last_reg_ktk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_ktk.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+                            
+        else if (last_reg_dtk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dtk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+                          
+        else if (last_reg_stk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_stk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+                                            }
+    else if(DMG_type == "6"){
+        if (last_reg_dtk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dtk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_dk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_stk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_stk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_sk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_sk.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_ktk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_ktk.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_kk != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kk.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}           
+                                          }
+    else if(DMG_type == "1"){
+        if (last_reg_k != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1;console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_k.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        if (last_reg_d != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_d.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_s != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_s.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
                         }
 if(DMG_type == "2"){
 TESTJS = JSON.parse(history_json)
-  if (last_reg_kt != null && history_json.includes(pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kt.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-    
-  if (last_reg_dt != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dt.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-  
-  if (last_reg_st != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_st.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+  if (last_reg_kt != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kt.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++} 
+  else if (last_reg_dt != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dt.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+  else if (last_reg_st != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_st.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
                     }
       if(DMG_type == "3"){
-          if (last_reg_dt != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dt.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-        if (last_reg_d != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_d.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-          if (last_reg_st != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_st.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-        if (last_reg_s != null && history_json.includes(pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_s.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-          if (last_reg_kt != null && history_json.includes(pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kt.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
-        if (last_reg_k != null && history_json.includes(pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_k.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}           
+        if (last_reg_dt != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_dt.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_d != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("d++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_d.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_st != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_st.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_s != null && history_json.includes('event_id\\":'+pivo.id) != true )  {deaths += 1;console.log ("s++",deaths) ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, deaths_id:D_LLS, type:'death', string: last_reg_s.input});j_n += 1;D_LLS += 1;var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_kt != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_kt.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}
+        else if (last_reg_k != null && history_json.includes('event_id\\":'+pivo.id) != true )  {kills += 1; console.log ("k++",kills)  ;var time = '';time  = pivo.time.toString();if (history_json_v2 == undefined){var history_json_v2 = JSON.parse(history_json)};console.log(history_json_v2.list);if(history_json_v2.list == undefined){history_json_v2 = JSON.parse(history_json_v2)} history_json_v2.list.push({id: j_n,event_id: pivo.id, kill_id:K_LLS,type:'kill', string: last_reg_k.input}); j_n += 1;K_LLS+= 1; var json_v2 = JSON.stringify(history_json_v2);fs.writeFileSync("INFO/KD/list", json_v2);pivo.id++}           
       }}
         if (pivo_v1.includes(N_conf) == true && pivo_v1.includes("поджёг") == true){var msg = pivo.msg;histr=msg;var time = '';time  = pivo.time.toString()}
         
@@ -177,13 +271,13 @@ function Update_v3(){
         data = data + chunk;  
         json_bmap = JSON.parse(chunk)
         if(json_bmap.valid != grid_m){
-          if(json_bmap.valid == false){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
-            else{M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+          if(json_bmap.valid == true){grid_m = json_bmap.valid;fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
+          else if(json_bmap.valid == false){M += 1;grid_m = json_bmap.valid;console.log('change map');fs.writeFileSync("INFO/BATTLE/map_number", M.toString())}
         }
-        if(json_bmap.valid == true){	
+        else if(json_bmap.valid == true){	
           fs.writeFileSync("INFO/BATTLE/PL", json_bmap.type)
           fs.writeFileSync("INFO/BATTLE/battle_info", "True")}
-          if(json_bmap.valid == false){
+        else if(json_bmap.valid == false){
             fs.writeFileSync("INFO/BATTLE/battle_info", "False")	
             fs.writeFileSync("INFO/BATTLE/PL", '')}
           
@@ -291,6 +385,9 @@ DMG_type_log = fs.readFileSync("INFO/OTHER/DMGType", "utf8");
 if(DMG_type_log == '1'){DMG_type_log = 'Только Самолёты'};
 if(DMG_type_log == '2'){DMG_type_log = 'Только Танки'};
 if(DMG_type_log == '3'){DMG_type_log = 'Самолёты и Танки'};
+if(DMG_type_log == '4'){DMG_type_log = 'Самолёт Выбранный'};
+if(DMG_type_log == '5'){DMG_type_log = 'Танк Выбранный'};
+if(DMG_type_log == '6'){DMG_type_log = 'СиТ Выбранный'};
 console.log('Сайты запущены по адресам: \nhttp://localhost:3000/obs - Зеркало обработаных данных для OBS\nhttp://localhost:3000/controle - Панель управления, корректирования данных')
 console.log('Тип отслеживаемой техники: '+DMG_type_log+'\nНик конфигурации: '+ N_conf)
 console.log('Полк конфигурации: '+ P_conf)
@@ -455,6 +552,27 @@ app.post("/api/VMR", function (req, res) {
   res.send('Succes');
 });
 
+app.post("/api/VMT", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  var buff_m = req.body.VM
+  fs.writeFileSync("INFO/BATTLE/TX_Cnf", buff_m.toString())
+  res.send('Succes');
+});
+app.get("/api/status_t", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  res.send(fs.readFileSync("INFO/BATTLE/TX_Cnf", 'utf8'));
+});
+app.get("/api/status_d", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  res.send(fs.readFileSync("INFO/OTHER/DMGType", 'utf8'));
+});
+app.get("/api/status_rt", function (req, res) {
+  if(!req.body) return res.sendStatus(400);
+  fs.writeFileSync("INFO/KD/list_d", '0')
+  fs.writeFileSync("INFO/KD/K", '0')
+  fs.writeFileSync("INFO/KD/D", '0')
+  res.send('Succes');
+});
 app.listen(port, () => {
   console.log(`Внимание! Во время работы программы WT_RP порт ${port} будет зарезервирован.`)
 })

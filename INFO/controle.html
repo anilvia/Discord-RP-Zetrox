@@ -26,7 +26,7 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
     
 <div class="FLEX C_V1">
     <div class="header">Управление оверлеем<div style='display: flex;flex-direction: column'><div id='SN1U' class='signU signDS'></div><div id='SN1' class='sign signDS'></div></div></div>
-<form method='POST' action='http://localhost:3000/api/state' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
+<form method='POST' action='http://localhost:3000/api/state' class='marker_title' target="csrf-frame" id="csrf-form" style="border-radius: 6px 6px 6px 6px;">
         <div class="form-group">
             <div class='bl_info'>Title</div>
                 <div style='display: flex;padding: 10px 0px 0px 10px;align-items: center;'>
@@ -109,13 +109,16 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
             <div style="display: flex;flex-direction: column;">
                <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать килл-лог</div><input id="input_overlay_c" type="checkbox" onclick ="Overlay_Toggle()"></div>
                 <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать превью</div><input id="input_overlay_c" type="checkbox" onclick ="OBS_Toggle(this)"></div>
-                <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать статус</div><input id="input_overlay_c" type="checkbox" onclick ="STA_Toggle()"></div>
+                <div style="display: flex;margin: 10px 10px 0px 10px;"><div>Показать статус</div><input id="input_overlay_c" type="checkbox" onclick ="STA_Toggle();HWS_BTN('marker_title')"></div>
                 <div style="display: flex;margin: 10px 10px 0px 10px;"><div style="border: 1px solid;border-radius: 5px;padding: 10px;display: flex;flex-direction: column;align-items: center;">Подсчёт киллов<div class="collum">
                     <select data-placeholder="" name="catlist[]" id="category"  name='st_txl' onchange="Select_TXL(this)">
                         
                         <option value="1">Самолёты</option>
                         <option value="2">Танки</option>
                         <option value="3">Самолёты и Танки</option>
+                        <option value="4">Самолёт выбранный</option>
+                        <option value="5">Танк выбранный</option>
+                        <option value="6">СиТ выбранный</option>
                     </select>
                     <div id='WRNG' style="display: flex; background: #ff000024;margin-top: 10px;font-size: 11px;padding: 5px;border-radius: 10px"><img class="imgWRNG" style="width: 35px" src='https://cdn.discordapp.com/attachments/688332382062903315/1160885967037665300/klipartz.com.png?ex=65364a4e&is=6523d54e&hm=c4b42d6f5c7133ddc7b152bf7e4c79ce4f01b6f1c3e26551a7a3cac43238c0d4&'><div class='WRNG_LOCAL'>При выборе режимов (Танки | Самолёты и Танки) <br>так же поcчитываются убийтства ботов <br>тк они имеют одни и те же ивентовые оповещения.</div></div>
                     </div></div></div>
@@ -153,11 +156,14 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
     <div class="FLEX C_V7" id='C_V7'>
         <div class="header">Панель управления отслеживанием техники<div style='display: flex;flex-direction: column'><div id='SN6U' class='signU signDS'></div><div id='SN6' class='sign signDS'></div></div></div>
         <div class="OPR_N" style="display: none" id='OPR_BL'>DIV DISABLE</div>
-   <div style="filter: blur(3px);">
-<div>Выберите технику для отслеживания ниже.</div>
-<div style="display: flex;margin: 10px 10px 0px 10px;"><div>Вычислять KD только с<br> выбраным видом техники</div><input id="input_overlay_c" type="checkbox" onclick =""></div>
+   <div style="filter: blur(0px);">
+<div style="display:flex;justify-content: center;">Выберите технику для отслеживания ниже.</div>
 <div style="display: flex;justify-content: space-around;flex-direction: row;">
+<div class='manualtex'><div>Manual</div>
+<div style="display: flex;flex-direction: column;align-items: center;padding: 10px 10px 0px 0px;"><input class="form-control" id='placeholder_t' name="Техника" placeholder="Техника" value = ''><button style='margin-bottom: 10px;' onclick=' reset_tx()'>Сброс с очисткой</button><button onclick='select_tx();upd_txl()'>Отслеживать</button></div>
 
+
+</div>
 <div class='autotex'><div>Auto</div>
 <div>Ожидание действия техники</div>
 <select data-placeholder="" name="catlist[]" id="category"  name='st_txl' onchange="">
@@ -165,11 +171,7 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
 </select>
 
 </div>
-<div class='manualtex'><div>Manual</div>
-<div style="display: flex;align-items: center;padding: 10px 0px 0px 10px;"><input class="form-control" id='placeholder_p' name="Техника" placeholder="Техника" value = ''></div>
-
-
-</div></div>
+</div>
 
 </div>
     </div>
@@ -180,8 +182,51 @@ PREW.classList.add('PRW_IN');PREW.style.filter = 'blur(1000px)';
         <div class="flex_ke" style="display:flex;flex-direction: row;align-items: center;"> <div class="state" id="state" style="margin-right: 10px;font-size: 30px;"></div> <div class="KD" id="1_KD" style="transition: 1s linear;"></div> </div></div> <div class="lastEv" id="1_lastEv" style="font-size: large; transition: all 1s linear 0s; color: rgb(255, 255, 255);"></div> </div>
     </div>
     </div>
-
+<div style='display: none' id='buffer_kd'></div>
 <script>
+var audio = new Audio();
+audio.preload = 'auto';
+audio.volume = 0.1;
+audio.src = 'https://cdn.discordapp.com/attachments/688332382062903315/1161612555849052260/si.mp3?ex=6538eeff&is=652679ff&hm=ecd55d4f208f1185f76a37e87dbfa6384192c76e13120054d156b0cdf5c29f1a&';
+    async function upd_dmg(){
+let response_ovr = await fetch('http://localhost:3000/api/status_d');
+    if (response_ovr.ok) {
+        let info = await response_ovr.text();
+        document.getElementById('category').value = info;
+        UPI('SN6U');
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}upd_dmg();
+    async function upd_txl(){
+let response_ovr = await fetch('http://localhost:3000/api/status_t');
+    if (response_ovr.ok) {
+        let info = await response_ovr.text();
+        document.getElementById('placeholder_t').placeholder = info; document.getElementById('placeholder_t').value = '';
+        UPI('SN6U');
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }}
+    async function reset_tx(){
+  let response_ovr = await fetch('http://localhost:3000/api/status_rt');
+    if (response_ovr.ok) {
+        let info = await response_ovr.text();
+        UPI('SN6U');
+        } else {
+        alert('Ошибка HTTP: ' + response.status);
+        }
+}
+        async function select_tx(){
+    var input_t = document.getElementById('placeholder_t')
+      fetch("http://localhost:3000/api/VMT", {
+                method: "POST",
+                body: JSON.stringify({
+                VM: input_t.value
+                }),
+  headers: {
+    "Content-type": "application/json; charset=UTF-8"
+  }
+});
+}upd_txl();
     async function UPI(id){
 document.getElementById(id).classList.add('signBL');
         setTimeout(() => {  document.getElementById(id).classList.remove('signBL'); }, 500)
@@ -212,8 +257,8 @@ document.getElementById('SN1').classList.remove('signDS');
                     document.getElementById('SN2').classList.add('signGR');
                 document.getElementById('SN3').classList.add('signGR');
             document.getElementById('SN4').classList.add('signGR');
-        document.getElementById('SN5').classList.add('signYL');
-    document.getElementById('SN6').classList.add('signRD');
+        document.getElementById('SN5').classList.add('signGR');
+    document.getElementById('SN6').classList.add('signYL');
 document.getElementById('SN8').classList.add('signGR');
 document.getElementById('SN1U').classList.remove('signRD');
     document.getElementById('SN2U').classList.remove('signRD');
@@ -234,7 +279,7 @@ document.getElementById('SN1U').classList.remove('signRD');
                 document.getElementById('SN3').classList.remove('signGR');
             document.getElementById('SN4').classList.remove('signGR');
         document.getElementById('SN5').classList.remove('signYL');
-    document.getElementById('SN6').classList.remove('signRD');
+    document.getElementById('SN6').classList.remove('signYL');
 document.getElementById('SN8').classList.remove('signGR');
 document.getElementById('SN1').classList.remove('signDS');
     document.getElementById('SN2').classList.remove('signDS');
@@ -418,7 +463,7 @@ fetch("http://localhost:3000/api/red_map", {
     let response_ovr = await fetch('http://localhost:3000/api/OPR');
     if (response_ovr.ok) {
         let info = await response_ovr.text();
-        if(info == 1){document.getElementById('kd_corr').style.animation = ('NOT_OPR 2s linear infinite');document.getElementById('C_V7').style.animation = ('NOT_OPR 2s linear infinite')
+        if(info == 1){document.getElementById('kd_corr').style.animation = ('NOT_OPR 2s linear infinite');//document.getElementById('C_V7').style.animation = ('NOT_OPR 2s linear infinite')
 
 }
         } else {
@@ -473,11 +518,13 @@ async function re(){
         var tmp_kills,tmp_deaths;
         console.log(info.Kills,info.Deaths);
 if(parseInt(info.Kills) > 0)    {info.Kills = '-'+info.Kills; tmp_kills = parseInt(info.Kills)
+  if(document.getElementById('placeholder_K').value =! tmp_kills){audio.play();}
 document.getElementById('placeholder_K').value = tmp_kills;document.getElementById('SK').innerHTML = tmp_kills;
 document.getElementById('service_click_m').click()
 }
         
 if(parseInt(info.Deaths) > 0)   {info.Deaths = '-'+info.Deaths; tmp_deaths = parseInt(info.Deaths)
+    if(document.getElementById('placeholder_D').value =! tmp_deaths){audio.play();}
 document.getElementById('placeholder_D').value = tmp_deaths;
 document.getElementById('SD').innerHTML = tmp_deaths;
 document.getElementById('service_click_m').click()
@@ -842,4 +889,16 @@ body {
     .signYL{background: #ffe200!important;box-shadow: 0px 0px 8px 1px rgb(255 226 0)!important;}
     .signDS{background: #383a48;}
     .signRDM{background: #ff0000!important;box-shadow: 0px 0px 8px 1px rgb(255 0 0)!important;}
+    .disabled{filter: blur(2px);pointer-events: none;}
+    .autotex {
+    
+        padding: 5px;filter: blur(3px);}
+    #placeholder_t{margin-bottom:10px;margin-left: 0px!important}
+.manualtex {
+    border-right: 1px solid white;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 </style>
